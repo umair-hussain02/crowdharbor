@@ -1,0 +1,309 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model IntakeSubmission {
+  id                String   @id @default(cuid())
+
+  name              String
+  email             String
+  phone             String?
+  country           String?
+  linkedin          String?
+  companyName       String
+  website           String?
+
+  stage             String
+  workingDuration   String?
+  industry          String?
+
+  tractionSignals   String[]
+  monthlyRevenue    String?
+  proofDescription  String?
+
+  raiseAmount       String
+  useOfFunds        String?
+  fundingPaths      String[]
+  timeline          String?
+
+  materials         String[]
+  hasNoMaterials    Boolean  @default(false)
+  uploadedFiles     Json?
+
+  challenges        String[]
+  biggestConcern    String?
+
+  selectedService   String
+  consentAccepted   Boolean
+  marketingAccepted Boolean  @default(false)
+
+  status            String   @default("new")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id           String   @id @default(cuid())
+
+  name         String
+  email        String
+  inquiryType  String
+  message      String
+  company      String?
+  website      String?
+  uploadedFile Json?
+
+  status       String   @default("new")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Article {
+  id              String    @id @default(cuid())
+
+  title           String
+  slug            String    @unique
+  excerpt         String?
+  content         String?
+
+  status          String    @default("draft")
+  category        String?
+  author          String?
+
+  seoTitle        String?
+  metaDescription String?
+  featuredImage   String?
+
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Page {
+  id              String   @id @default(cuid())
+
+  title           String
+  slug            String   @unique
+  routePath       String
+
+  status          String   @default("live")
+  seoTitle        String?
+  metaDescription String?
+  seoStatus       String   @default("missing")
+  contentJson     Json?
+
+  updatedBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  faqs            PageFaq[]
+}
+
+model PageFaq {
+  id        String   @id @default(cuid())
+  pageId    String
+
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model Service {
+  id          String   @id @default(cuid())
+
+  name        String
+  slug        String   @unique
+  description String?
+  // null price means "Custom" pricing (e.g. Partner Workshops) rather than a fixed amount.
+  price          Float?
+  currency       String   @default("EUR")
+  // When true, the public site prefixes the price with "From " (e.g. application-based
+  // services where price is a starting point, not a fixed checkout amount).
+  isStartingPrice Boolean @default(false)
+
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+
+  eventName String   // e.g. "page_view", "cta_click", "intake_started"
+  eventType String?  // optional broader category, e.g. "pageview" | "interaction" | "conversion"
+
+  path      String?
+  pageTitle String?
+  referrer  String?
+
+  source    String?  // utm_source
+  medium    String?  // utm_medium
+  campaign  String?  // utm_campaign
+
+  device    String?  // "desktop" | "mobile" | "tablet"
+  browser   String?
+  os        String?
+
+  // Derived from IP at ingestion time (e.g. via a geolocation lookup or edge
+  // header), then the raw IP is discarded. Never store the IP itself.
+  country   String?
+  city      String?
+
+  sessionId String?
+  visitorId String?
+
+  metadata  Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([eventName])
+  @@index([path])
+  @@index([sessionId])
+  @@index([visitorId])
+}
+
+model VisitorSession {
+  id        String    @id @default(cuid())
+
+  visitorId String
+  sessionId String    @unique
+
+  firstPath String?
+  lastPath  String?
+  referrer  String?
+  source    String?
+  device    String?
+  browser   String?
+  os        String?
+
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([createdAt])
+  @@index([visitorId])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("admin")
+  isActive     Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions       AdminSession[]
+  otps           AdminOtp[]
+  passwordResets AdminPasswordReset[]
+}
+
+model AdminSession {
+  id          String    @id @default(cuid())
+  adminUserId String
+
+  // Only a hash of the session token is ever stored — the real opaque token
+  // lives only in the HttpOnly cookie sent to the browser.
+  tokenHash   String    @unique
+
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime  @default(now())
+  revokedAt   DateTime?
+
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+}
+
+model AdminOtp {
+  id          String    @id @default(cuid())
+  adminUserId String
+
+  // Only a hash of the 6-digit code is stored, never the plain code.
+  codeHash    String
+  expiresAt   DateTime
+  attempts    Int       @default(0)
+  consumedAt  DateTime?
+
+  createdAt   DateTime  @default(now())
+
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+}
+
+model AdminPasswordReset {
+  id          String    @id @default(cuid())
+  adminUserId String
+
+  // Only a hash of the opaque reset token is stored — the real token is
+  // only ever emailed as a link, never persisted in plain form.
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  consumedAt  DateTime?
+
+  createdAt   DateTime  @default(now())
+
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+}
+
+// Used for login/OTP rate limiting and auditing. The attempted email is kept
+// as-is (it's already stored on AdminUser for real accounts), but the
+// requesting IP is never stored raw — only a salted hash — per the project's
+// "never store raw IP" rule.
+model AdminLoginAttempt {
+  id         String   @id @default(cuid())
+
+  identifier String   // email as typed at the login/OTP step (not necessarily a real account)
+  ipHash     String?  // sha256 hash of the request IP, never the raw IP
+  stage      String   // "password" | "otp" | "resend" | "password-reset"
+  success    Boolean
+
+  createdAt  DateTime @default(now())
+
+  @@index([identifier, createdAt])
+  @@index([ipHash, createdAt])
+}
+
+model WebVital {
+  id        String   @id @default(cuid())
+
+  name      String   // "LCP" | "INP" | "CLS" | "FCP" | "TTFB"
+  value     Float
+  rating    String?  // "good" | "needs-improvement" | "poor"
+
+  path      String?
+  sessionId String?
+  visitorId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([name])
+  @@index([path])
+  @@index([sessionId])
+  @@index([visitorId])
+}
