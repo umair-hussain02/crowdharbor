@@ -170,7 +170,7 @@ export function Header() {
               onClick={handleReadinessClick}
               className={headerTw.cta}
             >
-              Check Readiness
+              Check Your Readiness
               <ArrowRight size={14} />
             </button>
 
@@ -229,7 +229,7 @@ export function Header() {
                 onClick={handleReadinessClick}
                 className={headerTw.mobileCta}
               >
-                Check Readiness
+                Check Your Readiness
               </button>
             </nav>
           </motion.div>

@@ -33,27 +33,27 @@ export function HeroSection() {
               transition={{ duration: 0.6, delay: 0.1, ease }}
               className="m-0 font-[var(--font-heading)] text-[clamp(42px,5.5vw,72px)] font-extrabold leading-none tracking-[-0.03em] text-[var(--color-text-primary)]"
             >
-              Prepare before
+              Not rejected.
               <br />
-              you raise.
+              Unread.
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease }}
-              className="mt-5 max-w-[500px] text-[20px] font-semibold leading-[1.45] text-[var(--color-text-primary)]"
+              className="mt-5 max-w-[520px] text-[20px] font-semibold leading-[1.45] text-[var(--color-text-primary)]"
             >
-              Know what&apos;s weak, what&apos;s missing, and which funding path fits before you approach capital.
+              An investor spots one number that doesn&apos;t match your deck and passes in minutes. You never hear why.
             </motion.p>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.28, ease }}
-              className="mt-[14px] max-w-[500px] text-base leading-[var(--line-height-loose)] text-[var(--color-text-secondary)]"
+              className="mt-[14px] max-w-[520px] text-base leading-[var(--line-height-loose)] text-[var(--color-text-secondary)]"
             >
-              CrowdHarbor helps early-stage founders diagnose funding readiness, review key fundraising materials, and choose the right capital pathway before approaching investors, crowdfunding platforms, grants, or accelerators.
+              CrowdHarbor checks your pitch, your financials, and your company documents together. We find the gaps and contradictions investors catch in minutes, and tell you exactly what to fix before you raise.
             </motion.p>
 
             <motion.div
@@ -81,7 +81,7 @@ export function HeroSection() {
               transition={{ duration: 0.6, delay: 0.55, ease }}
               className="mt-6 flex flex-wrap gap-6"
             >
-              {['Readiness diagnosis', 'Material review', 'Capital pathway recommendation'].map((item) => (
+              {['Readiness diagnosis', 'Cross-document check', 'Capital pathway recommendation'].map((item) => (
                 <div key={item} className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="shrink-0 text-[var(--color-brand-orange)]" />
                   <span className="text-sm font-medium text-[var(--color-text-secondary)]">
@@ -118,7 +118,7 @@ function HeroCTAPrimary() {
       whileHover={{ scale: 1.02, y: -2 }}
       transition={{ duration: 0.2 }}
     >
-      Check Your Funding Readiness
+      Check Your Readiness
       <ArrowRight size={16} />
     </motion.a>
   );

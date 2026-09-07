@@ -10,7 +10,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const paths = [
   { icon: User, title: 'I am a founder', desc: 'Questions before starting a readiness review, Sprint, or preparation program.', cta: 'Ask a Founder Question', href: '#contact-form', isLink: false },
   { icon: FileText, title: 'I want to submit my company', desc: 'Founders ready to begin the review process.', cta: 'Start Founder Intake', href: '/intake', isLink: true, highlight: true },
-  { icon: Building2, title: 'I represent a startup community', desc: 'Accelerators, universities, founder programs, and startup groups interested in workshops.', cta: 'Ask About Workshops', href: 'mailto:contact@crowdharbor.com', isLink: true },
+  { icon: Building2, title: 'I am an accelerator or investor', desc: 'Accelerators, angel groups, universities, and funding platforms interested in partnering or workshops.', cta: 'Get in Touch', href: 'mailto:contact@crowdharbor.com', isLink: true },
   { icon: LifeBuoy, title: 'I need support', desc: 'Questions about payments, submissions, scheduling, or uploaded materials.', cta: 'Contact Support', href: 'mailto:contact@crowdharbor.com', isLink: true },
 ];
 

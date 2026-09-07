@@ -164,6 +164,10 @@ export function Footer() {
           <p className={footerTw.copyright}>
             © {new Date().getFullYear()} CrowdHarbor. All rights reserved.
           </p>
+
+          <Link href={footerNavigation.partners.href} className={footerTw.link}>
+            {footerNavigation.partners.label}
+          </Link>
         </div>
       </div>
     </footer>

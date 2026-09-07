@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { AboutHero } from '@/components/about/AboutHero';
+import { AboutFounders } from '@/components/about/AboutFounders';
 import { AboutWhyExists } from '@/components/about/AboutWhyExists';
 import { AboutProblem } from '@/components/about/AboutProblem';
 import { AboutBelief } from '@/components/about/AboutBelief';
@@ -21,6 +22,7 @@ export default function Page() {
   return (
     <>
       <AboutHero />
+        <AboutFounders />
         <AboutWhyExists />
         <AboutProblem />
         <AboutBelief />
